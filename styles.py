@@ -14,6 +14,7 @@ dash_style = {
     'height': '%fvh' % HEIGHT,
     'margin': 'auto',
     'min-width': '900px',
+    'fontFamily': 'Sans-Serif',
 }
 
 dash_upload_style = {
@@ -27,6 +28,7 @@ dash_upload_style = {
     'borderRadius': '5px',
     'textAlign': 'center',
     'margin': 'auto',
+    'margin-top': '5px',
 }
 
 dash_upload_div_style = {
@@ -43,6 +45,7 @@ dash_tabs_style = {
     'textAlign': 'left',
     'word-wrap': 'break-word',
     'padding-left': '5px',
+    'overflow-y': 'auto',
 }
 
 dash_tabs_div_style = {
@@ -55,7 +58,6 @@ dash_tab_output_style = {
     'width': '%fvw' % (CONTENT_WIDTH - 1),
     'margin-left': '1vw',
     'height': '%fvh' % CONTENT_HEIGHT,
-    'fontFamily': 'Sans-Serif',
     'float': 'right',
 }
 
@@ -68,6 +70,7 @@ dash_header_div_style = {
 
 dash_header_style = {
     'margin': '0',
+    'padding-left': '5px',
 }
 
 default_p_style = {
@@ -85,5 +88,5 @@ default_upload_style.update({
 default_div_style = {
     'width': '100%',
     'textAlign': 'center',
-    'margin-top': '%fvh' % (CONTENT_HEIGHT // 2.5),
+    'padding-top': '%fvh' % (CONTENT_HEIGHT // 2.5),
 }
