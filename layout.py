@@ -8,6 +8,7 @@ DASHES_LIST_ID = "dash-manager__dashes-list"
 TABS_LIST_ID = "dash-manager__tabs"
 UPLOAD_ID = "dash-manager__upload-data"
 TAB_OUTPUT_ID = "dash-manager__tab-output"
+IFRAME_ID = "dash-manager__iframe"
 
 
 def generate_tab_list():
@@ -86,6 +87,9 @@ def error_layout(trace):
         children=[html.Div(html.H2("Ошибка исполнения!")), html.Div(html.Pre(trace))],
         style=default_div_style
     )
+
+def render_layout(resource):
+    return html.Iframe(src=resource, style=iframe_style)
 
 
 HOMEPAGE_LAYOUT = html.Div(children=html_list, style=dash_style)

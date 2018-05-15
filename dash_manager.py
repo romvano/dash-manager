@@ -9,7 +9,9 @@ import os
 from os.path import abspath
 from urllib.parse import unquote
 
+from werkzeug.routing import Rule
 from werkzeug.serving import run_simple
+from werkzeug.utils import redirect
 from werkzeug.wsgi import DispatcherMiddleware
 
 from layout import *
@@ -18,7 +20,7 @@ from utils import get_directory, pip_install
 STATIC_PATH = os.path.join(os.path.dirname(abspath(__file__)), 'static')
 
 server = Flask(__name__)
-homepage = Dash(__name__, server=server, url_base_pathname='/home')
+homepage = Dash(__name__, server=server, url_base_pathname='/')
 homepage.css.config.serve_locally = True
 homepage.scripts.config.serve_locally = True
 homepage.config.supress_callback_exceptions = True
@@ -39,11 +41,39 @@ def update_output(list_of_contents, list_of_names):
     return generate_tab_list()
 
 
+def add_dash(dash_module, resource):
+    dash_app = [getattr(dash_module, x) for x in dir(dash_module) if isinstance(getattr(dash_module, x), Dash)][0]
+    dash_app.config.requests_pathname_prefix = '/dashes/' + resource + '/render/'
+    dash_app.config.routes_pathname_prefix = '/dashes/' + resource + '/render/'
+    dash_app.css.config.serve_locally = True
+    dash_app.scripts.config.serve_locally = True
+    existing_rules = [rule for rule in dash_app.server.url_map.iter_rules()]
+    for rule in existing_rules:
+        dash_app.server.url_map.add(Rule('/render' + rule.rule, endpoint=rule.endpoint))
+    dispatcher.mounts.update({'/dashes/' + resource: dash_app.server.wsgi_app})
+
+
+@server.route('/dashes/<path:resource>/')
+def render_dash(resource):
+    if 'dashes/' + resource not in dispatcher.mounts:
+        if resource is None:
+            return DEFAULT_LAYOUT
+        full_path = os.path.join(get_directory(), unquote(resource))
+        with open(full_path) as f:
+            if 'Dash' not in f.read():
+                return error_layout("Этот файл не содержит объект Dash")
+        try:
+            dash_module = SourceFileLoader('', full_path).load_module()
+        except FileNotFoundError:
+            return redirect('/')
+        else:
+            add_dash(dash_module, resource)
+    return redirect('/dashes/' +  resource + '/render')
+
+
 @homepage.callback(Output(TAB_OUTPUT_ID, 'children'), [Input(TABS_LIST_ID, 'value')])
 def render(resource):
-    global DEFAULT_CALLBACK_MAP
     if resource is None:
-        homepage.callback_map = DEFAULT_CALLBACK_MAP.copy()
         return DEFAULT_LAYOUT
     full_path = os.path.join(get_directory(), unquote(resource))
     with open(full_path) as f:
@@ -57,15 +87,9 @@ def render(resource):
     except:
         error = 'File: ' + (traceback.format_exc().split('File')[-1]).split('/')[-1]
         return error_layout(error)
-    finally:
-        dash_app = [getattr(dash_module, x) for x in dir(dash_module) if isinstance(getattr(dash_module, x), Dash)][0]
-        homepage.callback_map = DEFAULT_CALLBACK_MAP.copy()
-        inputs = [[Input(i['id'], i['property']) for i in input_list] for input_list in map(lambda v: v['inputs'], dash_app.callback_map.values())]
-        outputs = map(lambda k: Output(*(k.split('.'))), dash_app.callback_map.keys())
-        callbacks =  map(lambda v: v['callback'], dash_app.callback_map.values())
-        for input, output, callback in zip(inputs, outputs, callbacks):
-            homepage.callback(output, input)(callback)
-        return dash_app.layout
+    else:
+        add_dash(dash_module, resource)
+        return render_layout('/dashes/' + resource + '/render/')
 
 
 @server.route('/static/<resource>')
@@ -73,8 +97,6 @@ def serve_static(resource):
     return send_from_directory(STATIC_PATH, resource)
 
 
-DEFAULT_CALLBACK_MAP = homepage.callback_map
-
 if __name__ == '__main__':
     print("Using dashes directory:", get_directory())
-    run_simple('localhost', 5000, dispatcher, use_reloader=True, use_debugger=True)
+    run_simple('localhost', 5000, dispatcher, use_reloader=True, use_debugger=True, threaded=True)

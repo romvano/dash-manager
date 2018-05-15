@@ -1,5 +1,5 @@
 WIDTH = 98
-HEIGHT = 97
+HEIGHT = 98
 TABS_WIDTH = 0.2 * WIDTH
 CONTENT_WIDTH = WIDTH - TABS_WIDTH
 CONTENT_HEIGHT = 1 * HEIGHT
@@ -46,6 +46,7 @@ dash_tabs_style = {
     'word-wrap': 'break-word',
     'padding-left': '5px',
     'overflow-y': 'auto',
+    'overflow-x': 'hidden',
 }
 
 dash_tabs_div_style = {
@@ -89,4 +90,10 @@ default_div_style = {
     'width': '100%',
     'textAlign': 'center',
     'padding-top': '%fvh' % (CONTENT_HEIGHT // 2.5),
+}
+
+iframe_style = {
+    'border': '0px',
+    'width': '%fvw' % CONTENT_WIDTH,
+    'height': '%fvh' % CONTENT_HEIGHT,
 }
