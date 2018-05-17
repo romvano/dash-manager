@@ -63,9 +63,9 @@ def update_output(list_of_contents, list_of_names):
 def pass_callback_to_upload(contents):
     return contents
 
-@homepage.callback(Output(UPLOAD_ID, 'filename'), [Input(DEFAULT_UPLOAD_ID, 'filename')])
-def pass_callback_to_upload(filename):
-    return filename
+# @homepage.callback(Output(UPLOAD_ID, 'filename'), [Input(DEFAULT_UPLOAD_ID, 'filename')])
+# def pass_callback_to_upload(filename):
+#     return filename
 
 
 def add_dash(dash_module, resource):

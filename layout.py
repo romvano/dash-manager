@@ -113,7 +113,7 @@ def upload_result_layout(success, duplicates, wrong_format):
         return DEFAULT_LAYOUT
     added_files_list = []
     if success:
-        added_files_list.append(html.H2("Успешно добавлены файлы:"))
+        added_files_list.append(html.H1("Успешно добавлены файлы:"))
         added_files_list.extend([html.P(name) for name in success])
     if duplicates:
         added_files_list.append(html.H2("Эти файлы уже существуют:"))
