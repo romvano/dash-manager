@@ -1,14 +1,21 @@
 from os import listdir as ls
+
 import dash_core_components as dcc
 import dash_html_components as html
 from styles import *
 from utils import get_directory
 
-DASHES_LIST_ID = "dash-manager__dashes-list"
+TABS_DIV_ID = "dash-manager__tabs-div"
 TABS_LIST_ID = "dash-manager__tabs"
+DEFAULT_UPLOAD_ID = "dash-manager__default__upload"
 UPLOAD_ID = "dash-manager__upload-data"
 TAB_OUTPUT_ID = "dash-manager__tab-output"
 IFRAME_ID = "dash-manager__iframe"
+INVISIBLE_ID = "dash-manager__tabs__invisible"
+BUTTON_ID = "dash-manager__rewrite-button__%s"
+SPAN_ID = "dash-manager__span__%s"
+
+UPLOAD_DESCRIPTION = "Добавить можно только файлы с расширением .py и использованием объекта Dash"
 
 
 def generate_tab_list():
@@ -16,6 +23,24 @@ def generate_tab_list():
     for filename in sorted([f for f in ls(get_directory()) if ".py" in f]):
         tab_list.append({'label': filename, 'value': filename})
     return tab_list
+
+
+default_p = html.P(
+    "Выберите файл слева либо загрузите новый",
+    style=default_p_style
+)
+
+default_upload = html.Div(
+    children=dcc.Upload(
+        id=DEFAULT_UPLOAD_ID,
+        children=html.Div("Добавить файл"),
+        multiple=True
+    ),
+    style=default_upload_style,
+    title=UPLOAD_DESCRIPTION
+)
+
+DEFAULT_LAYOUT = html.Div(children=[default_p, default_upload], style=default_div_style)
 
 
 header = html.Div(
@@ -33,7 +58,7 @@ tabs = dcc.Tabs(
     style=dash_tabs_style
 )
 
-default_upload = html.Div(
+upload = html.Div(
     children=html.Div(
         children=dcc.Upload(
             id=UPLOAD_ID,
@@ -46,13 +71,19 @@ default_upload = html.Div(
     style=dash_upload_div_style
 )
 
+invisible_div = html.Div(
+    id=INVISIBLE_ID,
+    style=invisible_style
+)
+
 tabs_div = html.Div(
-    children=[header, tabs, default_upload],
+    id=TABS_DIV_ID,
+    children=[header, tabs, upload, invisible_div],
     style=dash_tabs_div_style
 )
 
 tab_output = html.Div(
-    html.Div(id=TAB_OUTPUT_ID),
+    html.Div(id=TAB_OUTPUT_ID, children=DEFAULT_LAYOUT),
     style=dash_tab_output_style
 )
 
@@ -67,21 +98,6 @@ html_list = [
     swal,
 ]
 
-default_p = html.P(
-    "Выберите файл слева либо загрузите новый",
-    style=default_p_style
-)
-
-default_upload = html.Div(
-    children=dcc.Upload(
-        id=UPLOAD_ID,
-        children=html.Div("Добавить файл"),
-        multiple=True
-    ),
-    style=default_upload_style,
-    title="Добавить можно только файлы с расширением .py и использованием объекта Dash"
-)
-
 def error_layout(trace):
     return html.Div(
         children=[html.Div(html.H2("Ошибка исполнения!")), html.Div(html.Pre(trace))],
@@ -92,5 +108,27 @@ def render_layout(resource):
     return html.Iframe(src=resource, style=iframe_style)
 
 
+def upload_result_layout(success, duplicates, wrong_format):
+    if not success and not duplicates and not wrong_format:
+        return DEFAULT_LAYOUT
+    added_files_list = []
+    if success:
+        added_files_list.append(html.H2("Успешно добавлены файлы:"))
+        added_files_list.extend([html.P(name) for name in success])
+    if duplicates:
+        added_files_list.append(html.H2("Эти файлы уже существуют:"))
+        added_files_list.extend([html.P([
+            html.Span(name, id=SPAN_ID % i),
+            "\t",
+            html.Button(children="Перезаписать", id=BUTTON_ID % i)
+        ]) for i, name in enumerate(duplicates)])
+    if wrong_format:
+        added_files_list.append(html.H2("Неверный формат файлов:", title=UPLOAD_DESCRIPTION))
+        added_files_list.extend([html.P(name, title=UPLOAD_DESCRIPTION) for name in wrong_format])
+    return html.Div(
+        children=added_files_list,
+        style=default_div_style
+    )
+
+
 HOMEPAGE_LAYOUT = html.Div(children=html_list, style=dash_style)
-DEFAULT_LAYOUT = html.Div(children=[default_p, default_upload], style=default_div_style)

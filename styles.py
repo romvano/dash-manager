@@ -89,11 +89,15 @@ default_upload_style.update({
 default_div_style = {
     'width': '100%',
     'textAlign': 'center',
-    'padding-top': '%fvh' % (CONTENT_HEIGHT // 2.5),
+    'padding-top': '%fvh' % (CONTENT_HEIGHT // 3),
 }
 
 iframe_style = {
     'border': '0px',
     'width': '%fvw' % CONTENT_WIDTH,
     'height': '%fvh' % CONTENT_HEIGHT,
+}
+
+invisible_style = {
+    'display': 'none',
 }
