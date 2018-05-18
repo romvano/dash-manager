@@ -42,7 +42,7 @@ def pass_callback_to_output(content):
     homepage.layout[INVISIBLE_ID].children = content
     return content and DASH_UPLOAD_RESULTS_FLAG
 
-@homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(UPLOAD_ID, 'contents'), Input(UPLOAD_ID, 'filename')])
+@homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(UPLOAD_ID, 'contents')], state=[State(UPLOAD_ID, 'filename')])
 def update_output(list_of_contents, list_of_names):
     if list_of_contents is not None and list_of_names is not None:
         success, duplicates, wrong_format = [], {}, []
@@ -109,7 +109,7 @@ def render(resource):
      if resource == DASH_UPLOAD_RESULTS_FLAG:
          loads = json.loads(str(homepage.layout[INVISIBLE_ID].children))
          return render_layout(add_dash(get_upload_dash(*loads), UPLOAD_RESULT_URL_PART))
-     full_path = os.path.join(get_directory(), unquote(resource))
+     full_path = os.path.join(get_directory(), unquote(resource), unquote(resource) + ".py")
      with open(full_path) as f:
          if 'Dash' not in f.read():
              return error_layout("Этот файл не содержит объект Dash")

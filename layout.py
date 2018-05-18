@@ -1,9 +1,7 @@
-from os import listdir as ls
-
 import dash_core_components as dcc
 import dash_html_components as html
 from styles import *
-from utils import get_directory
+from utils import generate_tab_list
 
 TABS_DIV_ID = "dash-manager__tabs-div"
 TABS_LIST_ID = "dash-manager__tabs"
@@ -16,14 +14,6 @@ BUTTON_ID = "dash-manager__rewrite-button__%s"
 SPAN_ID = "dash-manager__span__%s"
 
 UPLOAD_DESCRIPTION = "Добавить можно только файлы с расширением .py и использованием объекта Dash"
-
-
-def generate_tab_list():
-    tab_list = []
-    for filename in sorted([f for f in ls(get_directory()) if ".py" in f]):
-        tab_list.append({'label': filename, 'value': filename})
-    return tab_list
-
 
 default_p = html.P(
     "Выберите файл слева либо загрузите новый",

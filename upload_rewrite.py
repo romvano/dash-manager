@@ -6,7 +6,6 @@ from dash.dependencies import Output, Input, State
 from utils import write_file
 
 
-
 def get_upload_dash(success, duplicates, wrong_format):
     d = dash.Dash()
     d.css.config.serve_locally = True
