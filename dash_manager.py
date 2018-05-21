@@ -1,13 +1,13 @@
 import base64
 import traceback
 from importlib._bootstrap_external import SourceFileLoader
+from urllib.parse import unquote
 
 from dash.dependencies import Output, Input, State
 from flask import Flask, send_from_directory
 from dash import Dash
 import os
 from os.path import abspath
-from urllib.parse import unquote
 
 import json
 from werkzeug.routing import Rule, Map
@@ -23,6 +23,8 @@ STATIC_PATH = os.path.join(os.path.dirname(abspath(__file__)), 'static')
 DASH_UPLOAD_RESULTS_FLAG = 'dash_manager_upload_results_flag'
 UPLOAD_RESULT_URL_PART = "dash-manager_upload-results_unique-name"
 
+INTERVAL_IN_MS = 10 * 1000
+
 server = Flask(__name__)
 homepage = Dash(__name__, server=server, url_base_pathname='/')
 homepage.css.config.serve_locally = True
@@ -32,15 +34,22 @@ homepage.layout = HOMEPAGE_LAYOUT
 dispatcher = DispatcherMiddleware(server)
 
 
+# def get_value_from_request(tab_list):
+#     request_tab = request.args.get('tab')
+#     return request_tab if request_tab and unquote(request_tab) in tab_list else None
+
+
 @homepage.callback(Output(TABS_LIST_ID, 'tabs'), [Input(INVISIBLE_ID, 'children')])
 def update_tab_list(content):
     homepage.layout[INVISIBLE_ID].children = content
     return generate_tab_list()
 
 @homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children')])
-def pass_callback_to_output(content):
-    homepage.layout[INVISIBLE_ID].children = content
-    return content and DASH_UPLOAD_RESULTS_FLAG
+def pass_callback_to_output(content, n_intervals):
+    if content is not None:
+        homepage.layout[INVISIBLE_ID].children = content
+        return DASH_UPLOAD_RESULTS_FLAG
+    return None
 
 @homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(UPLOAD_ID, 'contents')], state=[State(UPLOAD_ID, 'filename')])
 def update_output(list_of_contents, list_of_names):
@@ -78,7 +87,7 @@ def add_dash(dash_module, resource):
     dash_app.css.config.serve_locally = True
     dash_app.scripts.config.serve_locally = True
     dash_app.server.before_request(lambda: os.chdir(os.path.join(get_directory(), resource)))
-    existing_rules = [rule for rule in dash_app.server.url_map.iter_rules()]
+    existing_rules = dash_app.server.url_map.iter_rules()
     dash_app.server.url_map = Map()
     for rule in existing_rules:
         dash_app.server.url_map.add(Rule('/render' + rule.rule.split('render')[-1], endpoint=rule.endpoint))
@@ -93,8 +102,11 @@ def render_dash(resource):
             return DEFAULT_LAYOUT
         full_path = os.path.join(get_directory(), unquote(resource), unquote(resource) + ".py")
         with open(full_path) as f:
-            if 'Dash' not in f.read():
+            cts = f.read()
+            if 'Dash' not in cts:
                 return error_layout("Этот файл не содержит объект Dash")
+            if '..' in cts:
+                return error_layout("Нельзя выходить за пределы рабочей директории (эта ошибка возникает при использовании .. в тексте дэша)")
         try:
             dash_module = SourceFileLoader(resource[:-3], full_path).load_module()
         except FileNotFoundError:
@@ -125,6 +137,27 @@ def render(resource):
          return error_layout(error)
      else:
          return render_layout(add_dash(dash_module, resource))
+
+
+@homepage.callback(Output(INTERVAL_DIV_ID, 'children'), [Input(SLIDESHOW_BUTTON_ID, 'n_clicks')])
+def turn_interval(n_clicks):
+    if n_clicks % 2 == 0:
+        return None
+    return dcc.Interval(
+        id=INTERVAL_ID,
+        interval= INTERVAL_IN_MS,
+        n_intervals=0
+    )
+
+@homepage.callback(Output(SLIDESHOW_BUTTON_ID, 'children'), [Input(SLIDESHOW_BUTTON_ID, 'n_clicks')])
+def change_slideshow_btn_text(n_clicks):
+    if n_clicks % 2 == 0:
+        return "Начать слайдшоу"
+    return "Остановить слайдшоу"
+
+# @homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INTERVAL_ID, 'n_intervals')])
+# def change_tab(n_intervals):
+
 
 
 @server.route('/static/<resource>')

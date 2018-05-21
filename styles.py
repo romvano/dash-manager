@@ -6,7 +6,7 @@ CONTENT_HEIGHT = 1 * HEIGHT
 UPLOAD_WIDTH = 90
 UPLOAD_HEIGHT = 0.05 * HEIGHT
 HEADER_HEIGHT = 0.05 * HEIGHT
-TABS_HEIGHT = HEIGHT - HEADER_HEIGHT - UPLOAD_HEIGHT
+TABS_HEIGHT = HEIGHT - HEADER_HEIGHT - 2 * UPLOAD_HEIGHT
 
 
 dash_style = {
@@ -15,6 +15,21 @@ dash_style = {
     'margin': 'auto',
     'min-width': '900px',
     'fontFamily': 'Sans-Serif',
+}
+
+dash_slideshow_button_style = {
+    'width': '%f%%' % UPLOAD_WIDTH,
+    'height': '%fvh' % (UPLOAD_HEIGHT),
+    'min-height': '30px',
+    'float': 'center',
+    'textAlign': 'center',
+    'margin-top': '3px',
+    'margin-left': '5%',
+    'background-color': 'green',
+    'color': 'white',
+    'font-size': 18,
+    'borderRadius': '5px',
+    'border': 0,
 }
 
 dash_upload_style = {
@@ -28,7 +43,7 @@ dash_upload_style = {
     'borderRadius': '5px',
     'textAlign': 'center',
     'margin': 'auto',
-    'margin-top': '5px',
+    'margin-top': '3px',
 }
 
 dash_upload_div_style = {

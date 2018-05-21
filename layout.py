@@ -1,5 +1,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
+from flask import request
+
 from styles import *
 from utils import generate_tab_list
 
@@ -12,8 +14,13 @@ IFRAME_ID = "dash-manager__iframe"
 INVISIBLE_ID = "dash-manager__tabs__invisible"
 BUTTON_ID = "dash-manager__rewrite-button__%s"
 SPAN_ID = "dash-manager__span__%s"
+SLIDESHOW_BUTTON_ID = "dash-manager__tabs__slideshow-button"
+INTERVAL_ID = "dash-manager__tabs__interval"
+INTERVAL_DIV_ID = "dash-manager__tabs__interval-div"
 
 UPLOAD_DESCRIPTION = "Добавить можно только файлы с расширением .py и использованием объекта Dash"
+
+INTERVAL_IN_MS = 10 * 1000
 
 default_p = html.P(
     "Выберите файл слева либо загрузите новый",
@@ -41,23 +48,38 @@ header = html.Div(
     style=dash_header_div_style
 )
 
+tab_list = generate_tab_list()
 tabs = dcc.Tabs(
-    tabs=generate_tab_list(),
+    tabs=tab_list,
     id=TABS_LIST_ID,
     vertical=True,
     style=dash_tabs_style
 )
 
+slideshow_button = html.Button(
+    id=SLIDESHOW_BUTTON_ID,
+    children="Начать слайдшоу",
+    style=dash_slideshow_button_style,
+    n_clicks=0
+)
+
 upload = html.Div(
-    children=html.Div(
-        children=dcc.Upload(
-            id=UPLOAD_ID,
-            children=html.Div("Добавить файл"),
-            multiple=True
-        ),
-        style=dash_upload_style,
-        title="Добавить можно только файлы с расширением .py и использованием объекта Dash"
+    children=dcc.Upload(
+        id=UPLOAD_ID,
+        children=html.Div("Добавить файл"),
+        multiple=True
     ),
+    style=dash_upload_style,
+    title="Добавить можно только файлы с расширением .py и использованием объекта Dash"
+)
+
+interval_div = html.Div(
+    id = INTERVAL_DIV_ID,
+    style = invisible_style
+)
+
+upload_and_slideshow = html.Div(
+    children=[slideshow_button, upload],
     style=dash_upload_div_style
 )
 
@@ -68,7 +90,7 @@ invisible_div = html.Div(
 
 tabs_div = html.Div(
     id=TABS_DIV_ID,
-    children=[header, tabs, upload, invisible_div],
+    children=[header, tabs, upload_and_slideshow, invisible_div],
     style=dash_tabs_div_style
 )
 
@@ -77,15 +99,9 @@ tab_output = html.Div(
     style=dash_tab_output_style
 )
 
-swal = html.Div(children=[
-    html.Link(href='/static/node_modules/sweetalert2/dist/sweetalert2.min.css', rel="stylesheet"),
-    html.Script(src='static/node_modules/sweetalert2/dist/sweetalert2.min.js'),
-])
-
 html_list = [
     tabs_div,
     tab_output,
-    swal,
 ]
 
 def error_layout(trace):
@@ -122,3 +138,9 @@ def upload_result_layout(success, duplicates, wrong_format):
 
 
 HOMEPAGE_LAYOUT = html.Div(children=html_list, style=dash_style)
+
+INTERVAL = dcc.Interval(
+    id=INTERVAL_ID,
+    interval= INTERVAL_IN_MS,
+    n_intervals=1
+)
