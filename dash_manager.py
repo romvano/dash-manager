@@ -3,14 +3,14 @@ import traceback
 from importlib._bootstrap_external import SourceFileLoader
 
 from dash.dependencies import Output, Input, State
-from flask import Flask, send_from_directory, g
+from flask import Flask, send_from_directory
 from dash import Dash
 import os
 from os.path import abspath
 from urllib.parse import unquote
 
 import json
-from werkzeug.routing import Rule
+from werkzeug.routing import Rule, Map
 from werkzeug.serving import run_simple
 from werkzeug.utils import redirect
 from werkzeug.wsgi import DispatcherMiddleware
@@ -63,9 +63,9 @@ def update_output(list_of_contents, list_of_names):
 def pass_callback_to_upload(contents):
     return contents
 
-# @homepage.callback(Output(UPLOAD_ID, 'filename'), [Input(DEFAULT_UPLOAD_ID, 'filename')])
-# def pass_callback_to_upload(filename):
-#     return filename
+@homepage.callback(Output(UPLOAD_ID, 'filename'), [Input(DEFAULT_UPLOAD_ID, 'filename')])
+def pass_callback_to_upload(filename):
+    return filename
 
 
 def add_dash(dash_module, resource):
@@ -77,9 +77,11 @@ def add_dash(dash_module, resource):
     dash_app.config.routes_pathname_prefix = '/dashes/' + resource + '/render/'
     dash_app.css.config.serve_locally = True
     dash_app.scripts.config.serve_locally = True
+    dash_app.server.before_request(lambda: os.chdir(os.path.join(get_directory(), resource)))
     existing_rules = [rule for rule in dash_app.server.url_map.iter_rules()]
+    dash_app.server.url_map = Map()
     for rule in existing_rules:
-        dash_app.server.url_map.add(Rule('/render' + rule.rule, endpoint=rule.endpoint))
+        dash_app.server.url_map.add(Rule('/render' + rule.rule.split('render')[-1], endpoint=rule.endpoint))
     dispatcher.mounts.update({'/dashes/' + resource: dash_app.server.wsgi_app})
     return '/dashes/' + resource + '/render/'
 
@@ -89,12 +91,12 @@ def render_dash(resource):
     if 'dashes/' + resource not in dispatcher.mounts:
         if resource is None:
             return DEFAULT_LAYOUT
-        full_path = os.path.join(get_directory(), unquote(resource))
+        full_path = os.path.join(get_directory(), unquote(resource), unquote(resource) + ".py")
         with open(full_path) as f:
             if 'Dash' not in f.read():
                 return error_layout("Этот файл не содержит объект Dash")
         try:
-            dash_module = SourceFileLoader('', full_path).load_module()
+            dash_module = SourceFileLoader(resource[:-3], full_path).load_module()
         except FileNotFoundError:
             return redirect('/')
         else:
@@ -109,12 +111,13 @@ def render(resource):
      if resource == DASH_UPLOAD_RESULTS_FLAG:
          loads = json.loads(str(homepage.layout[INVISIBLE_ID].children))
          return render_layout(add_dash(get_upload_dash(*loads), UPLOAD_RESULT_URL_PART))
-     full_path = os.path.join(get_directory(), unquote(resource), unquote(resource) + ".py")
+     dir_path = os.path.join(get_directory(), unquote(resource))
+     full_path = os.path.join(dir_path, unquote(resource) + ".py")
      with open(full_path) as f:
          if 'Dash' not in f.read():
              return error_layout("Этот файл не содержит объект Dash")
      try:
-         dash_module = SourceFileLoader('', full_path).load_module()
+         dash_module = SourceFileLoader(resource[:-3], full_path).load_module()
      except ImportError as ie:
          return render(resource) if pip_install(ie.__str__().split("'")[1]) == 0 else error_layout("Невозможно загрузить зависимости")
      except:
