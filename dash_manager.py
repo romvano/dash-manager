@@ -1,7 +1,7 @@
 import base64
 import traceback
 from importlib._bootstrap_external import SourceFileLoader
-from urllib.parse import unquote
+from urllib.parse import unquote, urlencode, urlparse, parse_qsl
 
 from dash.dependencies import Output, Input, State
 from flask import Flask, send_from_directory
@@ -12,7 +12,6 @@ from os.path import abspath
 import json
 from werkzeug.routing import Rule, Map
 from werkzeug.serving import run_simple
-from werkzeug.utils import redirect
 from werkzeug.wsgi import DispatcherMiddleware
 
 from layout import *
@@ -35,11 +34,6 @@ homepage.layout = HOMEPAGE_LAYOUT
 dispatcher = DispatcherMiddleware(server)
 
 
-# def get_value_from_request(tab_list):
-#     request_tab = request.args.get('tab')
-#     return request_tab if request_tab and unquote(request_tab) in tab_list else None
-
-
 @homepage.callback(Output(TABS_LIST_ID, 'tabs'), [Input(INVISIBLE_ID, 'children')])
 def update_tab_list(content):
     homepage.layout[INVISIBLE_ID].children = content
@@ -51,15 +45,20 @@ def pass_intervals_to_callback(n):
     return n
 
 
-@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children'), Input(INTERVAL_DATA_DIV_ID, 'children')])
-def pass_callback_to_output(content, n):
+@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children'), Input(INTERVAL_DATA_DIV_ID, 'children'), Input(LOCATION_ID, 'href')])
+def pass_callback_to_output(content, n, href):
     if content is not None:
         homepage.layout[INVISIBLE_ID].children = content
         return DASH_UPLOAD_RESULTS_FLAG
+    tabs = generate_tab_list()
     if n is not None:
-        tabs = generate_tab_list()
         return tabs[int(n) % len(tabs)]['value']
+    if href is not None:
+        tab = dict(parse_qsl(urlparse(href).query)).get('tab')
+        if tab is not None and tab in [i['value'] for i in tabs]:
+            return tab
     return None
+
 
 @homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(UPLOAD_ID, 'contents')], state=[State(UPLOAD_ID, 'filename')])
 def update_output(list_of_contents, list_of_names):
@@ -82,6 +81,7 @@ def update_output(list_of_contents, list_of_names):
 def pass_callback_to_upload_contents(contents):
     return contents
 
+
 @homepage.callback(Output(UPLOAD_ID, 'filename'), [Input(DEFAULT_UPLOAD_ID, 'filename')])
 def pass_callback_to_upload_filename(filename):
     return filename
@@ -103,27 +103,6 @@ def add_dash(dash_module, resource):
         dash_app.server.url_map.add(Rule('/render' + rule.rule.split('render')[-1], endpoint=rule.endpoint))
     dispatcher.mounts.update({'/dashes/' + resource: dash_app.server.wsgi_app})
     return '/dashes/' + resource + '/render/'
-
-
-@server.route('/dashes/<path:resource>/')
-def render_dash(resource):
-    if 'dashes/' + resource not in dispatcher.mounts:
-        if resource is None:
-            return DEFAULT_LAYOUT
-        full_path = os.path.join(get_directory(), unquote(resource), unquote(resource) + ".py")
-        with open(full_path) as f:
-            cts = f.read()
-            if 'Dash' not in cts:
-                return error_layout("Этот файл не содержит объект Dash")
-            if '..' in cts:
-                return error_layout("Нельзя выходить за пределы рабочей директории (эта ошибка возникает при использовании .. в тексте дэша)")
-        try:
-            dash_module = SourceFileLoader(resource[:-3], full_path).load_module()
-        except FileNotFoundError:
-            return redirect('/')
-        else:
-            add_dash(dash_module, resource)
-    return redirect('/dashes/' + resource + '/render')
 
 
 @homepage.callback(Output(TAB_OUTPUT_ID, 'children'), [Input(TABS_LIST_ID, 'value')])
@@ -175,6 +154,14 @@ def change_slideshow_btn_text(btn_ts, div_ts, btn_state):
     if btn_ts is not None and div_ts is not None and btn_ts >= div_ts - 200 and btn_state == START_SLIDESHOW:
         return STOP_SLIDESHOW
     return START_SLIDESHOW
+
+
+@homepage.callback(Output(LOCATION_ID, 'search'), [Input(TABS_LIST_ID, 'value')])
+def change_url(value):
+    if value is None:
+        return ""
+    state = urlencode({'tab': value})
+    return f'?{state}'
 
 
 @server.route('/static/<resource>')

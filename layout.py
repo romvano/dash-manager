@@ -116,7 +116,7 @@ tab_output = html.Div(
 )
 
 homepage_html_list = [
-    dcc.Location(id=LOCATION_ID),
+    dcc.Location(id=LOCATION_ID, refresh=False),
     homepage_tabs_div,
     tab_output,
 ]
