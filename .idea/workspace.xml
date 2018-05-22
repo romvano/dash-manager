@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e7f36041-1cc5-40c6-b55f-912742a0119f" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dash_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/dash_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/layout.py" beforeDir="false" afterPath="$PROJECT_DIR$/layout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles.py" beforeDir="false" afterPath="$PROJECT_DIR$/styles.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="dash_manager.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dash_manager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dash_manager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="168" selection-start-line="168" selection-end-line="168" />
+            <state relative-caret-position="464">
+              <caret line="168" lean-forward="true" selection-start-line="168" selection-end-line="168" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -26,19 +27,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dash.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/venv/lib/python3.6/site-packages/dash/dash.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="514" selection-start-line="514" selection-end-line="514" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="upload_rewrite.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/upload_rewrite.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
+            <state relative-caret-position="210">
               <caret line="19" selection-start-line="19" selection-end-line="19" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -62,8 +54,8 @@
       <file leaf-file-name="styles.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/styles.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1755">
-              <caret line="117" column="1" selection-start-line="117" selection-start-column="1" selection-end-line="117" selection-end-column="1" />
+            <state relative-caret-position="479">
+              <caret line="35" column="59" lean-forward="true" selection-start-line="35" selection-start-column="59" selection-end-line="35" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -71,7 +63,7 @@
       <file leaf-file-name="layout.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/layout.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
+            <state relative-caret-position="1470">
               <caret line="103" column="14" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
             </state>
           </provider>
@@ -90,6 +82,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/dash_manager.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -104,8 +99,8 @@
         <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/dashes/writefile/writefile.py" />
         <option value="$PROJECT_DIR$/dashes/writefile2/writefile2.py" />
-        <option value="$PROJECT_DIR$/styles.py" />
         <option value="$PROJECT_DIR$/layout.py" />
+        <option value="$PROJECT_DIR$/styles.py" />
         <option value="$PROJECT_DIR$/dash_manager.py" />
       </list>
     </option>
@@ -141,6 +136,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../dash_tabs_example" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.notifications" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -263,32 +259,20 @@
       <window_info anchor="right" id="R Packages" order="5" />
       <window_info anchor="right" id="R Graphics" order="4" />
       <window_info anchor="bottom" id="Event Log" order="14" sideWeight="0.50054884" side_tool="true" weight="0.32914045" />
-      <window_info anchor="bottom" id="Run" order="4" weight="0.3726977" />
+      <window_info active="true" anchor="bottom" id="Run" order="4" visible="true" weight="0.3726977" />
       <window_info anchor="bottom" id="Version Control" order="13" />
       <window_info anchor="bottom" id="Python Console" order="16" sideWeight="0.49945116" weight="0.32827735" />
       <window_info x="2004" y="174" width="344" height="677" id="Structure" order="0" sideWeight="0.50179857" side_tool="true" type="WINDOWED" weight="0.18770581" />
       <window_info anchor="bottom" id="Terminal" order="15" weight="0.312026" />
-      <window_info active="true" anchor="bottom" id="Debug" order="5" sideWeight="0.49945116" visible="true" weight="0.39869988" />
+      <window_info anchor="bottom" id="Debug" order="5" sideWeight="0.49945116" weight="0.39869988" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="13" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
-      <window_info content_ui="combo" id="Project" order="2" sideWeight="0.49820143" visible="true" weight="0.194292" />
-      <window_info x="2004" y="174" width="344" height="677" id="Structure" order="0" sideWeight="0.50179857" side_tool="true" type="WINDOWED" weight="0.18770581" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="TODO" order="12" />
-      <window_info anchor="right" id="R Graphics" order="4" />
-      <window_info anchor="bottom" id="Run" order="4" weight="0.3726977" />
-      <window_info anchor="right" id="R Packages" order="5" />
-      <window_info active="true" anchor="bottom" id="Debug" order="5" sideWeight="0.49945116" visible="true" weight="0.39869988" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Event Log" order="14" sideWeight="0.50054884" side_tool="true" weight="0.32914045" />
       <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
-      <window_info id="Favorites" order="1" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
-      <window_info anchor="bottom" id="Terminal" order="15" weight="0.312026" />
-      <window_info anchor="bottom" id="Python Console" order="16" sideWeight="0.49945116" weight="0.32827735" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -304,7 +288,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dash_manager.py</url>
-          <line>166</line>
+          <line>174</line>
           <option name="timeStamp" value="81" />
         </line-breakpoint>
       </breakpoints>
@@ -597,7 +581,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/upload_rewrite.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
+        <state relative-caret-position="210">
           <caret line="19" selection-start-line="19" selection-end-line="19" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -605,27 +589,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/styles.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1755">
-          <caret line="117" column="1" selection-start-line="117" selection-start-column="1" selection-end-line="117" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/layout.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
+        <state relative-caret-position="1470">
           <caret line="103" column="14" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dash_manager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="168" selection-start-line="168" selection-end-line="168" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -633,6 +600,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="301">
           <caret line="514" selection-start-line="514" selection-end-line="514" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/styles.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="479">
+          <caret line="35" column="59" lean-forward="true" selection-start-line="35" selection-start-column="59" selection-end-line="35" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dash_manager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="464">
+          <caret line="168" lean-forward="true" selection-start-line="168" selection-end-line="168" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

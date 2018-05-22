@@ -32,6 +32,9 @@ dash_slideshow_button_style = {
     'border': 0,
 }
 
+dash_slideshow_button_style_red = dash_slideshow_button_style.copy()
+dash_slideshow_button_style_red['background-color'] = 'red'
+
 dash_upload_style = {
     'width': '%f%%' % UPLOAD_WIDTH,
     'height': '%fvh' % (UPLOAD_HEIGHT),

@@ -159,18 +159,21 @@ def turn_interval(btn_state):
         n_intervals=0
     )
 
+
+@homepage.callback(Output(SLIDESHOW_BUTTON_ID, 'style'), [Input(SLIDESHOW_BUTTON_ID, 'children')])
+def change_slideshow_button_bgcolor(btn_state):
+    if btn_state == START_SLIDESHOW:
+        return dash_slideshow_button_style
+    return  dash_slideshow_button_style_red
+
+
 @homepage.callback(Output(SLIDESHOW_BUTTON_ID, 'children'),
-                   [Input(SLIDESHOW_BUTTON_ID, 'n_clicks'), Input(SLIDESHOW_BUTTON_ID, 'n_clicks_timestamp'),
-                    Input(TABS_DIV_ID, 'n_clicks'), Input(TABS_DIV_ID, 'n_clicks_timestamp')],
+                   [Input(SLIDESHOW_BUTTON_ID, 'n_clicks_timestamp'),
+                    Input(TABS_DIV_ID, 'n_clicks_timestamp')],
                    state=[State(SLIDESHOW_BUTTON_ID, 'children')])
-def change_slideshow_btn_text(btn_clicks, btn_ts, div_clicks, div_ts, btn_state):
+def change_slideshow_btn_text(btn_ts, div_ts, btn_state):
     if btn_ts is not None and div_ts is not None and btn_ts >= div_ts - 200 and btn_state == START_SLIDESHOW:
         return STOP_SLIDESHOW
-    return START_SLIDESHOW
-
-    if btn_state == START_SLIDESHOW:
-        if div_ts is not None and btn_ts >= div_ts:
-            return STOP_SLIDESHOW
     return START_SLIDESHOW
 
 
