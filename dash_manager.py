@@ -3,7 +3,7 @@ import traceback
 from importlib._bootstrap_external import SourceFileLoader
 from urllib.parse import unquote
 
-from dash.dependencies import Output, Input, State, Event
+from dash.dependencies import Output, Input, State
 from flask import Flask, send_from_directory
 from dash import Dash
 import os
@@ -45,21 +45,21 @@ def update_tab_list(content):
     homepage.layout[INVISIBLE_ID].children = content
     return generate_tab_list()
 
-def yield_tab_name():
-    i = -1
-    while True:
-        i += 1
-        yield ([None] + generate_tab_list())[i]
 
-@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children'), Input(INTERVAL_ID, 'n_intervals')])
+@homepage.callback(Output(INTERVAL_DATA_DIV_ID, 'children'), [Input(INTERVAL_ID, 'n_intervals')])
+def pass_intervals_to_callback(n):
+    return n
+
+
+@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children'), Input(INTERVAL_DATA_DIV_ID, 'children')])
 def pass_callback_to_output(content, n):
     if content is not None:
         homepage.layout[INVISIBLE_ID].children = content
         return DASH_UPLOAD_RESULTS_FLAG
     if n is not None:
         tabs = generate_tab_list()
-        return tabs[n % len(tabs)]['value']
-    return None#next(yield_tab_name())
+        return tabs[int(n) % len(tabs)]['value']
+    return None
 
 @homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(UPLOAD_ID, 'contents')], state=[State(UPLOAD_ID, 'filename')])
 def update_output(list_of_contents, list_of_names):
@@ -152,10 +152,10 @@ def render(resource):
 @homepage.callback(Output(INTERVAL_DIV_ID, 'children'), [Input(SLIDESHOW_BUTTON_ID, 'children')])
 def turn_interval(n_clicks):
     if n_clicks == "Начать слайдшоу":
-        return html.Div(id=INTERVAL_ID, style=invisible_style)
+        return None
     return dcc.Interval(
         id=INTERVAL_ID,
-        interval= INTERVAL_IN_MS,
+        interval=INTERVAL_IN_MS,
         n_intervals=0
     )
 
@@ -164,11 +164,6 @@ def change_slideshow_btn_text(n_clicks):
     if n_clicks % 2 == 0:
         return "Начать слайдшоу"
     return "Остановить слайдшоу"
-
-# @homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(INTERVAL_ID, 'n_intervals')])
-# def change_tab(n_intervals):
-#     tabs = generate_tab_list()
-#     return tabs[n_intervals % len(tabs)]
 
 
 @server.route('/static/<resource>')
