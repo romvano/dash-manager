@@ -21,6 +21,8 @@ INTERVAL_DATA_DIV_ID = "dash-manager__tabs__interval-data-div"
 LOCATION_ID = "dash-manager__location"
 
 UPLOAD_DESCRIPTION = "Добавить можно только файлы с расширением .py и использованием объекта Dash"
+START_SLIDESHOW = "Начать слайдшоу"
+STOP_SLIDESHOW = "Остановить слайдшоу"
 
 INTERVAL_IN_MS = 10 * 1000
 
@@ -98,7 +100,8 @@ invisible_div = html.Div(
 homepage_tabs_div = html.Div(
     id=TABS_DIV_ID,
     children=[header, tabs, upload_and_slideshow, interval_div, interval_data_div, invisible_div],
-    style=dash_tabs_div_style
+    style=dash_tabs_div_style,
+    n_clicks=0
 )
 
 interval = dcc.Interval(
