@@ -6,10 +6,12 @@ from styles import *
 from utils import generate_tab_list
 
 TABS_DIV_ID = "dash-manager__tabs-div"
+SLIDESHOW_TABS_DIV_ID = "dash-manger__slideshow-tabs-div"
 TABS_LIST_ID = "dash-manager__tabs"
 DEFAULT_UPLOAD_ID = "dash-manager__default__upload"
 UPLOAD_ID = "dash-manager__upload-data"
 TAB_OUTPUT_ID = "dash-manager__tab-output"
+SLIDESHOW_TAB_OUTPUT_ID = "dash-manager__slideshow-tab-output"
 IFRAME_ID = "dash-manager__iframe"
 INVISIBLE_ID = "dash-manager__tabs__invisible"
 BUTTON_ID = "dash-manager__rewrite-button__%s"
@@ -17,6 +19,7 @@ SPAN_ID = "dash-manager__span__%s"
 SLIDESHOW_BUTTON_ID = "dash-manager__tabs__slideshow-button"
 INTERVAL_ID = "dash-manager__tabs__interval"
 INTERVAL_DIV_ID = "dash-manager__tabs__interval-div"
+LOCATION_ID = "dash-manager__location"
 
 UPLOAD_DESCRIPTION = "Добавить можно только файлы с расширением .py и использованием объекта Dash"
 
@@ -83,14 +86,31 @@ upload_and_slideshow = html.Div(
     style=dash_upload_div_style
 )
 
+slideshow_div = html.Div(
+    children=slideshow_button,
+    style=dash_upload_div_style
+)
+
 invisible_div = html.Div(
     id=INVISIBLE_ID,
     style=invisible_style
 )
 
-tabs_div = html.Div(
+homepage_tabs_div = html.Div(
     id=TABS_DIV_ID,
-    children=[header, tabs, upload_and_slideshow, invisible_div],
+    children=[header, tabs, upload_and_slideshow, interval_div, invisible_div],
+    style=dash_tabs_div_style
+)
+
+interval = dcc.Interval(
+    id=INTERVAL_ID,
+    interval= INTERVAL_IN_MS,
+    n_intervals=0
+)
+
+slideshow_tabs_div = html.Div(
+    id=SLIDESHOW_TABS_DIV_ID,
+    children=[header, tabs, slideshow_div, interval],
     style=dash_tabs_div_style
 )
 
@@ -99,9 +119,21 @@ tab_output = html.Div(
     style=dash_tab_output_style
 )
 
-html_list = [
-    tabs_div,
+slideshow_tab_output = html.Div(
+    html.Div(id=SLIDESHOW_TAB_OUTPUT_ID),
+    style=dash_tab_output_style
+)
+
+homepage_html_list = [
+    dcc.Location(id=LOCATION_ID),
+    homepage_tabs_div,
     tab_output,
+]
+
+slideshow_html_list = [
+    dcc.Location(id=LOCATION_ID),
+    slideshow_tabs_div,
+    slideshow_tab_output
 ]
 
 def error_layout(trace):
@@ -137,10 +169,6 @@ def upload_result_layout(success, duplicates, wrong_format):
     )
 
 
-HOMEPAGE_LAYOUT = html.Div(children=html_list, style=dash_style)
+HOMEPAGE_LAYOUT = html.Div(children=homepage_html_list, style=dash_style)
+SLIDESHOW_LAYOUT = html.Div(children=slideshow_html_list, style=dash_style)
 
-INTERVAL = dcc.Interval(
-    id=INTERVAL_ID,
-    interval= INTERVAL_IN_MS,
-    n_intervals=1
-)

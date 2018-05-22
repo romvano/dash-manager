@@ -3,7 +3,7 @@ import traceback
 from importlib._bootstrap_external import SourceFileLoader
 from urllib.parse import unquote
 
-from dash.dependencies import Output, Input, State
+from dash.dependencies import Output, Input, State, Event
 from flask import Flask, send_from_directory
 from dash import Dash
 import os
@@ -22,6 +22,7 @@ from utils import get_directory, pip_install, write_file
 STATIC_PATH = os.path.join(os.path.dirname(abspath(__file__)), 'static')
 DASH_UPLOAD_RESULTS_FLAG = 'dash_manager_upload_results_flag'
 UPLOAD_RESULT_URL_PART = "dash-manager_upload-results_unique-name"
+TAB_SWITCH_MESSAGE = "dash-manager:goto_tab/"
 
 INTERVAL_IN_MS = 10 * 1000
 
@@ -44,12 +45,21 @@ def update_tab_list(content):
     homepage.layout[INVISIBLE_ID].children = content
     return generate_tab_list()
 
-@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children')])
-def pass_callback_to_output(content, n_intervals):
+def yield_tab_name():
+    i = -1
+    while True:
+        i += 1
+        yield ([None] + generate_tab_list())[i]
+
+@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children'), Input(INTERVAL_ID, 'n_intervals')])
+def pass_callback_to_output(content, n):
     if content is not None:
         homepage.layout[INVISIBLE_ID].children = content
         return DASH_UPLOAD_RESULTS_FLAG
-    return None
+    if n is not None:
+        tabs = generate_tab_list()
+        return tabs[n % len(tabs)]['value']
+    return None#next(yield_tab_name())
 
 @homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(UPLOAD_ID, 'contents')], state=[State(UPLOAD_ID, 'filename')])
 def update_output(list_of_contents, list_of_names):
@@ -69,11 +79,11 @@ def update_output(list_of_contents, list_of_names):
 
 
 @homepage.callback(Output(UPLOAD_ID, 'contents'), [Input(DEFAULT_UPLOAD_ID, 'contents')])
-def pass_callback_to_upload(contents):
+def pass_callback_to_upload_contents(contents):
     return contents
 
 @homepage.callback(Output(UPLOAD_ID, 'filename'), [Input(DEFAULT_UPLOAD_ID, 'filename')])
-def pass_callback_to_upload(filename):
+def pass_callback_to_upload_filename(filename):
     return filename
 
 
@@ -86,7 +96,7 @@ def add_dash(dash_module, resource):
     dash_app.config.routes_pathname_prefix = '/dashes/' + resource + '/render/'
     dash_app.css.config.serve_locally = True
     dash_app.scripts.config.serve_locally = True
-    dash_app.server.before_request(lambda: os.chdir(os.path.join(get_directory(), resource)))
+    dash_app.server.before_request(lambda: os.chdir(os.path.join(get_directory(), resource) if resource != UPLOAD_RESULT_URL_PART else os.path.join(get_directory(), '..')))
     existing_rules = dash_app.server.url_map.iter_rules()
     dash_app.server.url_map = Map()
     for rule in existing_rules:
@@ -139,10 +149,10 @@ def render(resource):
          return render_layout(add_dash(dash_module, resource))
 
 
-@homepage.callback(Output(INTERVAL_DIV_ID, 'children'), [Input(SLIDESHOW_BUTTON_ID, 'n_clicks')])
+@homepage.callback(Output(INTERVAL_DIV_ID, 'children'), [Input(SLIDESHOW_BUTTON_ID, 'children')])
 def turn_interval(n_clicks):
-    if n_clicks % 2 == 0:
-        return None
+    if n_clicks == "Начать слайдшоу":
+        return html.Div(id=INTERVAL_ID, style=invisible_style)
     return dcc.Interval(
         id=INTERVAL_ID,
         interval= INTERVAL_IN_MS,
@@ -155,9 +165,10 @@ def change_slideshow_btn_text(n_clicks):
         return "Начать слайдшоу"
     return "Остановить слайдшоу"
 
-# @homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INTERVAL_ID, 'n_intervals')])
+# @homepage.callback(Output(INVISIBLE_ID, 'children'), [Input(INTERVAL_ID, 'n_intervals')])
 # def change_tab(n_intervals):
-
+#     tabs = generate_tab_list()
+#     return tabs[n_intervals % len(tabs)]
 
 
 @server.route('/static/<resource>')
