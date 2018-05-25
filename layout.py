@@ -131,7 +131,8 @@ def error_layout(trace):
     )
 
 def render_layout(resource):
-    return html.Iframe(src=resource, style=iframe_style, id=str(hash(datetime.now())))
+    return [html.Iframe(src=resource + "?ccfnsallddwef=" + str(hash(datetime.now())), style=iframe_style),
+            html.Script("sleep(1000);iframe=document.getElementByTagName('iframe')[0];iframe.src=iframe.src")]
 
 def upload_result_layout(success, duplicates, wrong_format):
     if not success and not duplicates and not wrong_format:
