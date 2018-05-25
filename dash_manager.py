@@ -2,8 +2,9 @@ import base64
 import traceback
 from importlib._bootstrap_external import SourceFileLoader
 from urllib.parse import unquote, urlencode, urlparse, parse_qsl
+import functools
 
-from dash.dependencies import Output, Input, State
+from dash.dependencies import Output, Input, State, Event
 from flask import Flask, send_from_directory
 from dash import Dash
 import os
@@ -19,6 +20,7 @@ from upload_rewrite import get_upload_dash
 from utils import get_directory, pip_install, write_file
 
 STATIC_PATH = os.path.join(os.path.dirname(abspath(__file__)), 'static')
+HOME_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DASH_UPLOAD_RESULTS_FLAG = 'dash_manager_upload_results_flag'
 UPLOAD_RESULT_URL_PART = "dash-manager_upload-results_unique-name"
 TAB_SWITCH_MESSAGE = "dash-manager:goto_tab/"
@@ -45,18 +47,26 @@ def pass_intervals_to_callback(n):
     return n
 
 
-@homepage.callback(Output(TABS_LIST_ID, 'value'), [Input(INVISIBLE_ID, 'children'), Input(INTERVAL_DATA_DIV_ID, 'children'), Input(LOCATION_ID, 'href')])
-def pass_callback_to_output(content, n, href):
-    if content is not None:
-        homepage.layout[INVISIBLE_ID].children = content
-        return DASH_UPLOAD_RESULTS_FLAG
+@homepage.callback(Output(LOCATION_ID, 'href'), [Input(HEADER_ID, 'n_clicks')], state=[State(LOCATION_ID, 'href')])
+def go_home(n, state):
+    return '/' if n else state
+
+
+@homepage.callback(Output(TABS_LIST_ID, 'value'),
+                   [Input(INVISIBLE_ID, 'children'),
+                    Input(INTERVAL_DATA_DIV_ID, 'children'),
+                    Input(LOCATION_ID, 'href')],
+                   state=[State(LOCATION_ID, 'search'),
+                          State(SLIDESHOW_BUTTON_ID, 'children')])
+def pass_callback_to_output(content, n, href, url_state, btn_state):
     tabs = generate_tab_list()
+    tab = dict(parse_qsl(urlparse(url_state).query)).get('tab', "")
+    if content is not None and tab != DASH_UPLOAD_RESULTS_FLAG + str(hash(content)) and btn_state != STOP_SLIDESHOW:
+        return DASH_UPLOAD_RESULTS_FLAG + str(hash(content))
     if n is not None:
         return tabs[int(n) % len(tabs)]['value']
-    if href is not None:
-        tab = dict(parse_qsl(urlparse(href).query)).get('tab')
-        if tab is not None and tab in [i['value'] for i in tabs]:
-            return tab
+    if tab != "" and tab in [t['value'] for t in tabs]:
+        return tab
     return None
 
 
@@ -87,6 +97,7 @@ def pass_callback_to_upload_filename(filename):
     return filename
 
 
+@functools.lru_cache(maxsize=32)
 def add_dash(dash_module, resource):
     if not isinstance(dash_module, Dash):
         dash_app = [getattr(dash_module, x) for x in dir(dash_module) if isinstance(getattr(dash_module, x), Dash)][0]
@@ -96,11 +107,13 @@ def add_dash(dash_module, resource):
     dash_app.config.routes_pathname_prefix = '/dashes/' + resource + '/render/'
     dash_app.css.config.serve_locally = True
     dash_app.scripts.config.serve_locally = True
-    dash_app.server.before_request(lambda: os.chdir(os.path.join(get_directory(), resource) if resource != UPLOAD_RESULT_URL_PART else os.path.join(get_directory(), '..')))
+    dash_app.server.before_request(lambda: os.chdir(os.path.join(get_directory(), resource) if resource != UPLOAD_RESULT_URL_PART else HOME_DIRECTORY))
     existing_rules = dash_app.server.url_map.iter_rules()
     dash_app.server.url_map = Map()
     for rule in existing_rules:
         dash_app.server.url_map.add(Rule('/render' + rule.rule.split('render')[-1], endpoint=rule.endpoint))
+    if '/dashes/' + resource in dispatcher.mounts:
+        del dispatcher.mounts['/dashes/' + resource]
     dispatcher.mounts.update({'/dashes/' + resource: dash_app.server.wsgi_app})
     return '/dashes/' + resource + '/render/'
 
@@ -109,7 +122,7 @@ def add_dash(dash_module, resource):
 def render(resource):
      if resource is None:
          return DEFAULT_LAYOUT
-     if resource == DASH_UPLOAD_RESULTS_FLAG:
+     if resource.startswith(DASH_UPLOAD_RESULTS_FLAG):
          loads = json.loads(str(homepage.layout[INVISIBLE_ID].children))
          return render_layout(add_dash(get_upload_dash(*loads), UPLOAD_RESULT_URL_PART))
      dir_path = os.path.join(get_directory(), unquote(resource))
@@ -130,13 +143,10 @@ def render(resource):
 
 @homepage.callback(Output(INTERVAL_DIV_ID, 'children'), [Input(SLIDESHOW_BUTTON_ID, 'children')])
 def turn_interval(btn_state):
+    os.chdir(HOME_DIRECTORY)
     if btn_state == START_SLIDESHOW:
         return None
-    return dcc.Interval(
-        id=INTERVAL_ID,
-        interval=INTERVAL_IN_MS,
-        n_intervals=0
-    )
+    return interval
 
 
 @homepage.callback(Output(SLIDESHOW_BUTTON_ID, 'style'), [Input(SLIDESHOW_BUTTON_ID, 'children')])
@@ -144,6 +154,13 @@ def change_slideshow_button_bgcolor(btn_state):
     if btn_state == START_SLIDESHOW:
         return dash_slideshow_button_style
     return  dash_slideshow_button_style_red
+
+
+@homepage.callback(Output(UPLOAD_ID, 'style'), [Input(SLIDESHOW_BUTTON_ID, 'children')])
+def hide_upload(btn_state):
+    if btn_state == START_SLIDESHOW:
+        return dash_upload_style
+    return invisible_style
 
 
 @homepage.callback(Output(SLIDESHOW_BUTTON_ID, 'children'),

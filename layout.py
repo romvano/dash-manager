@@ -1,14 +1,17 @@
+from datetime import datetime
+
 import dash_core_components as dcc
 import dash_html_components as html
-from flask import request
 
 from styles import *
 from utils import generate_tab_list
 
+HEADER_ID = "dash-manager__header"
 TABS_DIV_ID = "dash-manager__tabs-div"
 TABS_LIST_ID = "dash-manager__tabs"
 DEFAULT_UPLOAD_ID = "dash-manager__default__upload"
 UPLOAD_ID = "dash-manager__upload-data"
+UPLOAD_DIV_ID = "dash-manager__upload-div"
 TAB_OUTPUT_ID = "dash-manager__tab-output"
 IFRAME_ID = "dash-manager__iframe"
 INVISIBLE_ID = "dash-manager__tabs__invisible"
@@ -46,7 +49,8 @@ DEFAULT_LAYOUT = html.Div(children=[default_p, default_upload], style=default_di
 
 header = html.Div(
     children=html.H1(
-        "DASH",
+        id=HEADER_ID,
+        children="DASH",
         style=dash_header_style
     ),
     style=dash_header_div_style
@@ -67,13 +71,12 @@ slideshow_button = html.Button(
     n_clicks=0
 )
 
-upload = html.Div(
-    children=dcc.Upload(
+upload = html.Div(dcc.Upload(
         id=UPLOAD_ID,
         children=html.Div("Добавить файл"),
-        multiple=True
+        multiple=True,
+        style=dash_upload_style
     ),
-    style=dash_upload_style,
     title="Добавить можно только файлы с расширением .py и использованием объекта Dash"
 )
 
@@ -128,8 +131,7 @@ def error_layout(trace):
     )
 
 def render_layout(resource):
-    return html.Iframe(src=resource, style=iframe_style)
-
+    return html.Iframe(src=resource, style=iframe_style, id=str(hash(datetime.now())))
 
 def upload_result_layout(success, duplicates, wrong_format):
     if not success and not duplicates and not wrong_format:
