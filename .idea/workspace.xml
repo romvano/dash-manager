@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e7f36041-1cc5-40c6-b55f-912742a0119f" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,8 +16,8 @@
       <file leaf-file-name="dash_manager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dash_manager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="126" column="64" selection-start-line="126" selection-start-column="64" selection-end-line="126" selection-end-column="64" />
+            <state relative-caret-position="235">
+              <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -128,8 +128,8 @@
         <option value="$PROJECT_DIR$/dashes/writefile/writefile.py" />
         <option value="$PROJECT_DIR$/dashes/writefile2/writefile2.py" />
         <option value="$PROJECT_DIR$/styles.py" />
-        <option value="$PROJECT_DIR$/dash_manager.py" />
         <option value="$PROJECT_DIR$/layout.py" />
+        <option value="$PROJECT_DIR$/dash_manager.py" />
       </list>
     </option>
   </component>
@@ -640,8 +640,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dash_manager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="126" column="64" selection-start-line="126" selection-start-column="64" selection-end-line="126" selection-end-column="64" />
+        <state relative-caret-position="235">
+          <caret line="173" lean-forward="true" selection-start-line="173" selection-end-line="173" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
