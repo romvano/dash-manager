@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e7f36041-1cc5-40c6-b55f-912742a0119f" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/layout.py" beforeDir="false" afterPath="$PROJECT_DIR$/layout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -13,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="dash_manager.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="dash_manager.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dash_manager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="63" selection-start-line="63" selection-end-line="63" />
+            <state relative-caret-position="166">
+              <caret line="126" column="64" selection-start-line="126" selection-start-column="64" selection-end-line="126" selection-end-column="64" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -85,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layout.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="layout.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/layout.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="133" column="76" selection-start-line="133" selection-start-column="76" selection-end-line="133" selection-end-column="76" />
+            <state relative-caret-position="358">
+              <caret line="133" column="106" lean-forward="true" selection-start-line="133" selection-start-column="106" selection-end-line="133" selection-end-column="106" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -280,7 +280,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="52" y="0" width="1868" height="1080" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="2" sideWeight="0.49820143" visible="true" weight="0.19868277" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -291,9 +290,9 @@
       <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49945116" weight="0.32827735" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3726977" />
       <window_info x="2004" y="174" width="344" height="677" id="Structure" order="0" sideWeight="0.50179857" side_tool="true" type="WINDOWED" weight="0.18770581" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.312026" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.312026" />
       <window_info id="Favorites" order="1" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.49945116" visible="true" weight="0.39869988" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49945116" weight="0.39869988" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -629,22 +628,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dash_manager.py">
+    <entry file="file://$PROJECT_DIR$/layout.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
+        <state relative-caret-position="358">
+          <caret line="133" column="106" lean-forward="true" selection-start-line="133" selection-start-column="106" selection-end-line="133" selection-end-column="106" />
           <folding>
-            <element signature="e#0#13#0" expanded="true" />
+            <element signature="e#0#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/layout.py">
+    <entry file="file://$PROJECT_DIR$/dash_manager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="133" column="76" selection-start-line="133" selection-start-column="76" selection-end-line="133" selection-end-column="76" />
+        <state relative-caret-position="166">
+          <caret line="126" column="64" selection-start-line="126" selection-start-column="64" selection-end-line="126" selection-end-column="64" />
           <folding>
-            <element signature="e#0#29#0" expanded="true" />
+            <element signature="e#0#13#0" expanded="true" />
           </folding>
         </state>
       </provider>

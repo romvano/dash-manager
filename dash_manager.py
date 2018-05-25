@@ -188,4 +188,4 @@ def serve_static(resource):
 
 if __name__ == '__main__':
     print("Using dashes directory:", get_directory())
-    run_simple('localhost', 5000, dispatcher, use_reloader=True, use_debugger=True, threaded=True)
+    run_simple('0.0.0.0', 5000, dispatcher, use_reloader=True, use_debugger=True, threaded=True)
